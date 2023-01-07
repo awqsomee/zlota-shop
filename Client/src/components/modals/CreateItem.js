@@ -1,33 +1,33 @@
-import React, {useContext, useEffect, useState} from 'react';
-import Modal from "react-bootstrap/Modal";
-import {Button, Dropdown, Form, Row, Col} from "react-bootstrap";
-import {Context} from "../../index";
-import {createItem, fetchBrands, fetchItems, fetchTypes} from "../../http/itemAPI";
-import {observer} from "mobx-react-lite";
+import React, { useContext, useEffect, useState } from 'react'
+import Modal from 'react-bootstrap/Modal'
+import { Button, Dropdown, Form, Row, Col } from 'react-bootstrap'
+import { Context } from '../../index'
+import { createItem, fetchBrands, fetchItems, fetchTypes } from '../../http/itemAPI'
+import { observer } from 'mobx-react-lite'
 
-const CreateItem = observer(({show, onHide}) => {
-    const {item} = useContext(Context)
+const CreateItem = observer(({ show, onHide }) => {
+    const { item } = useContext(Context)
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
     const [file, setFile] = useState(null)
     const [info, setInfo] = useState([])
 
     useEffect(() => {
-        fetchTypes().then(data => item.setTypes(data))
-        fetchBrands().then(data => item.setBrands(data))
+        fetchTypes().then((data) => item.setTypes(data))
+        fetchBrands().then((data) => item.setBrands(data))
     }, [])
 
     const addInfo = () => {
-        setInfo([...info, {title: '', description: '', number: Date.now()}])
+        setInfo([...info, { title: '', description: '', number: Date.now() }])
     }
     const removeInfo = (number) => {
-        setInfo(info.filter(i => i.number !== number))
+        setInfo(info.filter((i) => i.number !== number))
     }
     const changeInfo = (key, value, number) => {
-        setInfo(info.map(i => i.number === number ? {...i, [key]: value} : i))
+        setInfo(info.map((i) => (i.number === number ? { ...i, [key]: value } : i)))
     }
 
-    const selectFile = e => {
+    const selectFile = (e) => {
         setFile(e.target.files[0])
     }
 
@@ -39,74 +39,65 @@ const CreateItem = observer(({show, onHide}) => {
         formData.append('brandId', item.selectedBrand.id)
         formData.append('typeId', item.selectedType.id)
         formData.append('info', JSON.stringify(info))
-        createItem(formData).then(data => onHide())
+        createItem(formData).then((data) => onHide())
     }
 
     return (
-        <Modal
-            show={show}
-            onHide={onHide}
-            centered
-        >
+        <Modal show={show} onHide={onHide} centered>
             <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    Добавить позицию
-                </Modal.Title>
+                <Modal.Title id="contained-modal-title-vcenter">Добавить позицию</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
                     <Dropdown className="mt-2 mb-2">
-                        <Dropdown.Toggle>{item.selectedType.name || "Выберите тип"}</Dropdown.Toggle>
+                        <Dropdown.Toggle>
+                            {item.selectedType.name || 'Выберите тип'}
+                        </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {item.types.map(type =>
+                            {item.types.map((type) => (
                                 <Dropdown.Item
                                     onClick={() => item.setSelectedType(type)}
                                     key={type.id}
                                 >
                                     {type.name}
                                 </Dropdown.Item>
-                            )}
+                            ))}
                         </Dropdown.Menu>
                     </Dropdown>
                     <Dropdown className="mt-2 mb-2">
-                        <Dropdown.Toggle>{item.selectedBrand.name || "Выберите бренд"}</Dropdown.Toggle>
+                        <Dropdown.Toggle>
+                            {item.selectedBrand.name || 'Выберите бренд'}
+                        </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {item.brands.map(brand =>
+                            {item.brands.map((brand) => (
                                 <Dropdown.Item
                                     onClick={() => item.setSelectedBrand(brand)}
                                     key={brand.id}
                                 >
                                     {brand.name}
                                 </Dropdown.Item>
-                            )}
+                            ))}
                         </Dropdown.Menu>
                     </Dropdown>
                     <Form.Control
                         value={name}
-                        onChange={e => setName(e.target.value)}
+                        onChange={(e) => setName(e.target.value)}
                         className="mt-3"
                         placeholder="Введите название позиции"
                     />
                     <Form.Control
                         value={price}
-                        onChange={e => setPrice(Number(e.target.value))}
+                        onChange={(e) => setPrice(Number(e.target.value))}
                         className="mt-3"
                         placeholder="Введите цену"
                         type="number"
                     />
-                    <Form.Control
-                        className="mt-3"
-                        type="file"
-                        onChange={selectFile}
-                    />
-                    <hr/>
-                    <Button
-                        variant={"outline-dark"}
-                        onClick={addInfo}
-                    >
+                    <Form.Control className="mt-3" type="file" onChange={selectFile} />
+                    <hr />
+                    <Button variant={'outline-dark'} onClick={addInfo}>
                         Добавить новое свойство
                     </Button>
-                    {info.map(i =>
+                    {info.map((i) => (
                         <Row className="mt-4" key={i.number}>
                             <Col md={4}>
                                 <Form.Control
@@ -118,28 +109,34 @@ const CreateItem = observer(({show, onHide}) => {
                             <Col md={4}>
                                 <Form.Control
                                     value={i.description}
-                                    onChange={(e) => changeInfo('description', e.target.value, i.number)}
+                                    onChange={(e) =>
+                                        changeInfo('description', e.target.value, i.number)
+                                    }
                                     placeholder="Введите описание свойства"
                                 />
                             </Col>
                             <Col md={4}>
                                 <Button
                                     onClick={() => removeInfo(i.number)}
-                                    variant={"outline-danger"}
+                                    variant={'outline-danger'}
                                 >
                                     Удалить
                                 </Button>
                             </Col>
                         </Row>
-                    )}
+                    ))}
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
-                <Button variant="outline-success" onClick={addItem}>Добавить</Button>
+                <Button variant="outline-danger" onClick={onHide}>
+                    Закрыть
+                </Button>
+                <Button variant="outline-success" onClick={addItem}>
+                    Добавить
+                </Button>
             </Modal.Footer>
         </Modal>
-    );
-});
+    )
+})
 
-export default CreateItem;
+export default CreateItem

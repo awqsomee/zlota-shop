@@ -1,16 +1,16 @@
-import React, {useContext} from 'react';
-import {observer} from "mobx-react-lite";
-import {Context} from "../index";
-import {Card, Form, Row} from "react-bootstrap";
+import React, { useContext } from 'react'
+import { observer } from 'mobx-react-lite'
+import { Context } from '../index'
+import { Card, Form, Row } from 'react-bootstrap'
 
 const BrandBar = observer(() => {
-    const {item} = useContext(Context)
+    const { item } = useContext(Context)
 
     return (
         <Form className="d-flex">
-            {item.brands.map(brand =>
+            {item.brands.map((brand) => (
                 <Card
-                    style={{cursor:'pointer'}}
+                    style={{ cursor: 'pointer' }}
                     key={brand.id}
                     className="p-3"
                     onClick={() => item.setSelectedBrand(brand)}
@@ -18,9 +18,9 @@ const BrandBar = observer(() => {
                 >
                     {brand.name}
                 </Card>
-            )}
+            ))}
         </Form>
-    );
-});
+    )
+})
 
-export default BrandBar;
+export default BrandBar
